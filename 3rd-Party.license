@@ -1,0 +1,25 @@
+ONLYOFFICE DocBuilder SDK uses code from the following 3rd party projects:
+
+org.slf4j.slf4j-api - Simple Logging Facade for Java (https://github.com/qos-ch/slf4j).
+License:              MIT
+License File:         slf4j-api.license
+
+org.slf4j.slf4j-nop  - Simple Logging Facade for Java (https://github.com/qos-ch/slf4j).
+License:              MIT License
+License File:         slf4j-nop.license
+
+org.openjdk.jmh.jmh-core - JMH is a Java harness for building, running, and analysing nano/micro/milli/macro benchmarks written in Java and other languages targetting the JVM. (https://github.com/openjdk/jmh/tree/master/jmh-core)
+License:              GPL-2.0
+License File:         jmh-core.license
+
+org.openjdk.jmh.jmh-generator-annprocess - JMH is a Java harness for building, running, and analysing nano/micro/milli/macro benchmarks written in Java and other languages targetting the JVM. (https://github.com/openjdk/jmh/tree/master/jmh-generator-annprocess)
+License:              GPL
+License File:         jmh-generator-annprocess.license
+
+org.junit.jupiter.junit-jupiter-api - The programmer-friendly testing framework for Java and the JVM. (https://github.com/junit-team/junit-framework)
+License:              EPL-2.0
+License File:         junit-jupiter-api.license
+
+org.junit.jupiter.junit-jupiter-engine - The programmer-friendly testing framework for Java and the JVM. (https://github.com/junit-team/junit-framework)
+License:              EPL-2.0
+License File:         junit-jupiter-engine.license
