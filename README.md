@@ -22,6 +22,16 @@ This wrapper is designed with **enforced restrictive access** to ensure the Flue
 
 ## Usage
 
+### Initialize Native Library Loader
+```java
+var loader = NativeLibraryLoader.getInstance(new SystemOSChecker());
+try (var docBuilderLoader = NativeDocBuilderLoader.getInstance(loader)){
+    var nativePath = Path.of("location_to_binary");
+    loader.load(nativePath);
+    docBuilderLoader.load(nativePath.toString());
+}
+```
+
 ### Basic Document Creation
 
 ```java
