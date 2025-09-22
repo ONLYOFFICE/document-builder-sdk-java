@@ -279,6 +279,88 @@ public class DocumentSession {
   }
 
   /**
+   * Opens an existing file, performs operations on it, and saves it to a new location.
+   *
+   * <p>This method opens an existing document file, loads it into the builder for manipulation,
+   * executes the provided operations through the DocumentBuilder, and automatically saves the
+   * modified document to the specified output path. All resource cleanup is handled automatically.
+   *
+   * <p><strong>This is the primary method for modifying existing documents.</strong> Each session
+   * creates and manages its own DocBuilder instance, ensuring proper resource isolation.
+   *
+   * @param inputPath the file path of the existing document to open and modify
+   * @param operations a consumer that defines the document modification operations to perform
+   * @param outputPath the file path where the modified document should be saved
+   * @throws RuntimeException if document opening, modification, or saving fails for any reason
+   * @throws IllegalArgumentException if any parameter is null or empty
+   * @throws Exception if any other error occurs during document processing
+   */
+  public void openFile(String inputPath, Consumer<DocumentBuilder> operations, String outputPath)
+      throws Exception {
+    openFile(inputPath, "", operations, outputPath);
+  }
+
+  /**
+   * Opens an existing file with parameters, performs operations on it, and saves it to a new
+   * location.
+   *
+   * <p>This method opens an existing document file with optional parameters, loads it into the
+   * builder for manipulation, executes the provided operations through the DocumentBuilder, and
+   * automatically saves the modified document to the specified output path. All resource cleanup is
+   * handled automatically.
+   *
+   * <p><strong>This is the primary method for modifying existing documents with custom
+   * parameters.</strong> Each session creates and manages its own DocBuilder instance, ensuring
+   * proper resource isolation.
+   *
+   * @param inputPath the file path of the existing document to open and modify
+   * @param params additional parameters for opening the file (can be null for default settings)
+   * @param operations a consumer that defines the document modification operations to perform
+   * @param outputPath the file path where the modified document should be saved
+   * @throws RuntimeException if document opening, modification, or saving fails for any reason
+   * @throws IllegalArgumentException if inputPath, operations, or outputPath is null or empty
+   * @throws Exception if any other error occurs during document processing
+   */
+  public void openFile(
+      String inputPath, String params, Consumer<DocumentBuilder> operations, String outputPath)
+      throws Exception {
+    if (inputPath == null || inputPath.trim().isEmpty())
+      throw new IllegalArgumentException("Input path cannot be null or empty");
+    if (operations == null) throw new IllegalArgumentException("Operations cannot be null");
+    if (outputPath == null || outputPath.trim().isEmpty())
+      throw new IllegalArgumentException("Output path cannot be null or empty");
+
+    logger.debug(
+        "Opening file from: {} with params: {}, outputPath: {}", inputPath, params, outputPath);
+
+    try (var docBuilder = new DocBuilder(loader)) {
+      logger.debug("Opening file: {}", inputPath);
+
+      int openResult = docBuilder.openFile(inputPath, params);
+      if (openResult < 0)
+        throw new RuntimeException(
+            String.format("Could not open a file due-to an error: %d", openResult));
+
+      try (var context = docBuilder.getContext()) {
+        var builder = new DocumentBuilder(context, fileType);
+
+        operations.accept(builder);
+
+        logger.debug("Saving modified file to: {}", outputPath);
+        int saveResult = docBuilder.saveFile(fileTypeCode, outputPath);
+        if (saveResult < 0)
+          throw new RuntimeException(
+              String.format("Could not save a modified file due-to an error: %d", saveResult));
+
+        docBuilder.closeFile();
+        logger.debug("Document successfully opened, modified, and saved to: {}", outputPath);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to process document", e);
+    }
+  }
+
+  /**
    * Helper method to extract file type code from the file type object.
    *
    * <p>This method determines the appropriate integer file type code based on the file type object.
