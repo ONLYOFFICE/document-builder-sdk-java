@@ -50,8 +50,8 @@ public class SpreadsheetExample {
     var session = DocumentSession.createSpreadsheet(loader);
     session.build(
         doc ->
-            doc.useAPI(
-                api ->
+            doc.withWorksheet(
+                (api, worksheet) ->
                     api.with(
                         "GetActiveSheet",
                         worksheet1 -> {
